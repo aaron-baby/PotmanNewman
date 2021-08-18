@@ -1,0 +1,695 @@
+{
+	"info": {
+		"_postman_id": "4239bdca-91a2-429c-9d68-0b324d140938",
+		"name": "Demo-My",
+		"description": "* All the variables are saved on the collection level.\n* Environment variables are cleared before each run (on the admin login request in the Pre-req folder)\n* Tests are located on folder levels mostly, very rarely on the request level.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Pre-req",
+			"item": [
+				{
+					"name": "Auth",
+					"item": [
+						{
+							"name": "Login Admin",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const jsonBody = pm.response.json();",
+											"",
+											"if (responseCode.code === 200) {",
+											"    pm.environment.set(`access_token`, jsonBody.content.access_token);",
+											"    }",
+											"",
+											"else {",
+											"    console.log(`${pm.info.requestName}: ` + `Error: ` + pm.response.json().error.message);",
+											"    postman.setNextRequest(null);",
+											"}",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.environment.clear()"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "username",
+											"value": "{{superUserName}}",
+											"description": "Username of the account",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "{{superUserPassword}}",
+											"description": "Password of the account.\nFor version earlier than 1.4.2 use encrypted password, with encyption: Base64(HMAC256(username + password with password as the secret key))",
+											"type": "text"
+										},
+										{
+											"key": "remember",
+											"value": "true",
+											"description": "Optional, if set, the access token generated will be valid for longer period",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/auth/login",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"auth",
+										"login"
+									]
+								},
+								"description": "This endpoint creates a session token which will be used as access_token for all other requests as authentication."
+							},
+							"response": []
+						}
+					]
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(`${pm.info.requestName}: ` + `status code is 200`, () => {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "CRUD",
+			"item": [
+				{
+					"name": "Users",
+					"item": [
+						{
+							"name": "List Users",
+							"item": [
+								{
+									"name": "Get users list",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {\r",
+													"    pm.response.to.have.status(200);\r",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "access_token",
+												"value": "{{access_token}}"
+											}
+										],
+										"url": {
+											"raw": "{{url}}/admin/users/",
+											"host": [
+												"{{url}}"
+											],
+											"path": [
+												"admin",
+												"users",
+												""
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "Get users list",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "access_token",
+														"value": "{{access_token}}"
+													}
+												],
+												"url": {
+													"raw": "{{url}}/admin/users/",
+													"host": [
+														"{{url}}"
+													],
+													"path": [
+														"admin",
+														"users",
+														""
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Server",
+													"value": "nginx"
+												},
+												{
+													"key": "Date",
+													"value": "Wed, 19 Aug 2020 07:49:15 GMT"
+												},
+												{
+													"key": "Content-Type",
+													"value": "application/json; charset=utf-8"
+												},
+												{
+													"key": "Content-Length",
+													"value": "1879"
+												},
+												{
+													"key": "Connection",
+													"value": "keep-alive"
+												},
+												{
+													"key": "X-Powered-By",
+													"value": "Express"
+												},
+												{
+													"key": "Access-Control-Allow-Methods",
+													"value": "GET, POST, PUT, DELETE"
+												},
+												{
+													"key": "Access-Control-Allow-Methods",
+													"value": "GET, POST, PUT, DELETE, OPTIONS"
+												},
+												{
+													"key": "Access-Control-Allow-Headers",
+													"value": "X-Requested-With,content-type, Authorization, access_token, api_key"
+												},
+												{
+													"key": "Access-Control-Allow-Headers",
+													"value": "DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,access_token"
+												},
+												{
+													"key": "ETag",
+													"value": "W/\"757-DJCnnICJHCUl44zWszRQj+ofQL8\""
+												},
+												{
+													"key": "Access-Control-Allow-Credentials",
+													"value": "true"
+												}
+											],
+											"cookie": [],
+											"body": "{\n    \"result\": true,\n    \"content\": [\n        {\n            \"id\": 10,\n            \"firstName\": \"-\",\n            \"lastName\": \"-\",\n            \"username\": \"soufiane@kalvad.com\",\n            \"status\": \"active\",\n            \"type\": \"admin\",\n            \"photo\": null,\n            \"roleId\": 2,\n            \"lastLoginAt\": null,\n            \"contactNumber\": null,\n            \"plan\": \"desk\",\n            \"createdAt\": \"2020-03-18T07:38:22.031Z\",\n            \"updatedAt\": \"2020-03-18T07:38:22.031Z\",\n            \"roles\": [\n                \"admin\"\n            ]\n        },\n        {\n            \"id\": 2,\n            \"firstName\": \"Zdial\",\n            \"lastName\": \"Bot\",\n            \"username\": \"zdial@aswat-telecom.com\",\n            \"status\": \"active\",\n            \"type\": \"admin\",\n            \"photo\": null,\n            \"roleId\": 7,\n            \"lastLoginAt\": \"2020-08-19T07:49:06.326Z\",\n            \"contactNumber\": null,\n            \"plan\": \"regular\",\n            \"createdAt\": \"2020-01-14T09:18:13.324Z\",\n            \"updatedAt\": \"2020-08-19T07:49:06.326Z\",\n            \"roles\": [\n                \"admin\"\n            ]\n        }\n    ],\n    \"info\": {}\n}"
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "Create Users",
+							"item": [
+								{
+									"name": "Create user",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {\r",
+													"    pm.response.to.have.status(200);\r",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "access_token",
+												"value": "{{access_token}}"
+											}
+										],
+										"body": {
+											"mode": "urlencoded",
+											"urlencoded": [
+												{
+													"key": "username",
+													"value": "vaya.rajesh+42@gmail.com",
+													"type": "text"
+												},
+												{
+													"key": "password",
+													"value": "123123123",
+													"type": "text",
+													"disabled": true
+												},
+												{
+													"key": "firstName",
+													"value": "Ron",
+													"type": "text"
+												},
+												{
+													"key": "lastName",
+													"value": "Vaya",
+													"type": "text"
+												},
+												{
+													"key": "plan",
+													"value": "regular",
+													"description": "Optional field - `regular`, `desk`.\nDefault value: `regular`",
+													"type": "text"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{url}}/admin/users",
+											"host": [
+												"{{url}}"
+											],
+											"path": [
+												"admin",
+												"users"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "Create user",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "access_token",
+														"value": "{{access_token}}"
+													}
+												],
+												"body": {
+													"mode": "urlencoded",
+													"urlencoded": [
+														{
+															"key": "username",
+															"value": "vaya.rajesh+42@gmail.com",
+															"type": "text"
+														},
+														{
+															"key": "password",
+															"value": "123123123",
+															"type": "text",
+															"disabled": true
+														},
+														{
+															"key": "firstName",
+															"value": "Ron",
+															"type": "text"
+														},
+														{
+															"key": "lastName",
+															"value": "Vaya",
+															"type": "text"
+														},
+														{
+															"key": "plan",
+															"value": "regular",
+															"description": "Optional field - `regular`, `desk`.\nDefault value: `regular`",
+															"type": "text"
+														}
+													]
+												},
+												"url": {
+													"raw": "{{url}}/admin/users",
+													"host": [
+														"{{url}}"
+													],
+													"path": [
+														"admin",
+														"users"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Server",
+													"value": "nginx"
+												},
+												{
+													"key": "Date",
+													"value": "Wed, 19 Aug 2020 07:54:14 GMT"
+												},
+												{
+													"key": "Content-Type",
+													"value": "application/json; charset=utf-8"
+												},
+												{
+													"key": "Content-Length",
+													"value": "426"
+												},
+												{
+													"key": "Connection",
+													"value": "keep-alive"
+												},
+												{
+													"key": "X-Powered-By",
+													"value": "Express"
+												},
+												{
+													"key": "Access-Control-Allow-Methods",
+													"value": "GET, POST, PUT, DELETE"
+												},
+												{
+													"key": "Access-Control-Allow-Methods",
+													"value": "GET, POST, PUT, DELETE, OPTIONS"
+												},
+												{
+													"key": "Access-Control-Allow-Headers",
+													"value": "X-Requested-With,content-type, Authorization, access_token, api_key"
+												},
+												{
+													"key": "Access-Control-Allow-Headers",
+													"value": "DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,access_token"
+												},
+												{
+													"key": "ETag",
+													"value": "W/\"1aa-5lk7CmfQ2SWORszUofiOOgAwaZg\""
+												},
+												{
+													"key": "Access-Control-Allow-Credentials",
+													"value": "true"
+												}
+											],
+											"cookie": [],
+											"body": "{\n    \"result\": true,\n    \"content\": {\n        \"status\": \"active\",\n        \"id\": 63,\n        \"username\": \"vaya.rajesh+42@gmail.com\",\n        \"firstName\": \"Ron\",\n        \"lastName\": \"Vaya\",\n        \"plan\": \"regular\",\n        \"roleId\": 5,\n        \"password\": \"910f5e4158cc19b0c35327026d6372a7\",\n        \"type\": \"admin\",\n        \"updatedAt\": \"2020-08-19T07:54:14.290Z\",\n        \"createdAt\": \"2020-08-19T07:54:14.290Z\",\n        \"key\": null,\n        \"photo\": null,\n        \"lastLoginAt\": null,\n        \"contactNumber\": null,\n        \"deletedAt\": null,\n        \"country_code\": null,\n        \"language_code\": null\n    },\n    \"info\": {}\n}"
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "Update Users",
+							"item": [
+								{
+									"name": "Update user",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {\r",
+													"    pm.response.to.have.status(200);\r",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "access_token",
+												"value": "{{access_token}}"
+											}
+										],
+										"body": {
+											"mode": "urlencoded",
+											"urlencoded": [
+												{
+													"key": "firstName",
+													"value": "Ron",
+													"type": "text"
+												},
+												{
+													"key": "lastName",
+													"value": "Vaya",
+													"type": "text"
+												},
+												{
+													"key": "photo",
+													"value": "photo234234",
+													"type": "text"
+												},
+												{
+													"key": "plan",
+													"value": "desk",
+													"description": "Optional field - `regular`, `desk`.",
+													"type": "text"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{url}}/admin/users/vaya.rajesh+42@gmail.com",
+											"host": [
+												"{{url}}"
+											],
+											"path": [
+												"admin",
+												"users",
+												"vaya.rajesh+42@gmail.com"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "Update user",
+											"originalRequest": {
+												"method": "PUT",
+												"header": [
+													{
+														"key": "access_token",
+														"value": "{{access_token}}"
+													}
+												],
+												"body": {
+													"mode": "urlencoded",
+													"urlencoded": [
+														{
+															"key": "firstName",
+															"value": "Ron",
+															"type": "text"
+														},
+														{
+															"key": "lastName",
+															"value": "Vaya",
+															"type": "text"
+														},
+														{
+															"key": "photo",
+															"value": "photo234234",
+															"type": "text"
+														},
+														{
+															"key": "plan",
+															"value": "desk",
+															"description": "Optional field - `regular`, `desk`.",
+															"type": "text"
+														}
+													]
+												},
+												"url": {
+													"raw": "{{url}}/admin/users/2",
+													"host": [
+														"{{url}}"
+													],
+													"path": [
+														"admin",
+														"users",
+														"2"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Server",
+													"value": "nginx"
+												},
+												{
+													"key": "Date",
+													"value": "Wed, 19 Aug 2020 07:55:29 GMT"
+												},
+												{
+													"key": "Content-Type",
+													"value": "application/json; charset=utf-8"
+												},
+												{
+													"key": "Content-Length",
+													"value": "337"
+												},
+												{
+													"key": "Connection",
+													"value": "keep-alive"
+												},
+												{
+													"key": "X-Powered-By",
+													"value": "Express"
+												},
+												{
+													"key": "Access-Control-Allow-Methods",
+													"value": "GET, POST, PUT, DELETE"
+												},
+												{
+													"key": "Access-Control-Allow-Methods",
+													"value": "GET, POST, PUT, DELETE, OPTIONS"
+												},
+												{
+													"key": "Access-Control-Allow-Headers",
+													"value": "X-Requested-With,content-type, Authorization, access_token, api_key"
+												},
+												{
+													"key": "Access-Control-Allow-Headers",
+													"value": "DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,access_token"
+												},
+												{
+													"key": "ETag",
+													"value": "W/\"151-sYYhC2pvuudYeDFOH4JzZfjs9rE\""
+												},
+												{
+													"key": "Access-Control-Allow-Credentials",
+													"value": "true"
+												}
+											],
+											"cookie": [],
+											"body": "{\n    \"result\": true,\n    \"content\": {\n        \"id\": 2,\n        \"firstName\": \"Ron\",\n        \"lastName\": \"Vaya\",\n        \"username\": \"zdial@aswat-telecom.com\",\n        \"status\": \"active\",\n        \"type\": \"admin\",\n        \"photo\": \"photo234234\",\n        \"roleId\": 7,\n        \"lastLoginAt\": \"2020-08-19T07:49:06.326Z\",\n        \"contactNumber\": null,\n        \"plan\": \"desk\",\n        \"createdAt\": \"2020-01-14T09:18:13.324Z\",\n        \"updatedAt\": \"2020-08-19T07:55:29.028Z\"\n    },\n    \"info\": {}\n}"
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "Delete Users",
+							"item": [
+								{
+									"name": "Delete user",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {\r",
+													"    pm.response.to.have.status(200);\r",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "access_token",
+												"value": "{{access_token}}"
+											}
+										],
+										"body": {
+											"mode": "urlencoded",
+											"urlencoded": []
+										},
+										"url": {
+											"raw": "{{url}}/admin/users/vaya.rajesh+42@gmail.com",
+											"host": [
+												"{{url}}"
+											],
+											"path": [
+												"admin",
+												"users",
+												"vaya.rajesh+42@gmail.com"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "app",
+			"value": "admin"
+		},
+		{
+			"key": "url",
+			"value": "https://wonderwoman-api.aswat.co"
+		},
+		{
+			"key": "superUserName",
+			"value": "ziwo@aswat-telecom.com"
+		},
+		{
+			"key": "superUserPassword",
+			"value": "e9g6O1wJ7-lKm4wm!2pvax=BFMjtEidyRxFT6d3tCl0PmH4g?ebX9!tCbfCs^FPR"
+		},
+		{
+			"key": "agentUserName",
+			"value": "alla@ziwo.io"
+		},
+		{
+			"key": "agentPassword",
+			"value": "allaALLA123!@#"
+		}
+	]
+}
